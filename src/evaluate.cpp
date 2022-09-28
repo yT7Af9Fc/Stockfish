@@ -192,6 +192,14 @@ using namespace Trace;
 
 namespace {
 
+  int P1 = 7;
+  int P2 = 1760;
+  int P3 = 20;
+  int P4 = 195, P5 = 211;
+  TUNE(SetRange(2, 32), P1);
+  TUNE(SetRange(0, 99), P3);
+  TUNE(P2, P4, P5);
+
   // Threshold for lazy and space evaluation
   constexpr Value LazyThreshold1    =  Value(3631);
   constexpr Value LazyThreshold2    =  Value(2084);
@@ -1057,7 +1065,7 @@ Value Eval::evaluate(const Position& pos, int* complexity) {
   // We use the much less accurate but faster Classical eval when the NNUE 
   // option is set to false. Otherwise we use the NNUE eval unless the
   // PSQ advantage is decisive and several pieces remain (~3 Elo)
-  bool useClassical = !useNNUE || (pos.count<ALL_PIECES>() > 7 && abs(psq) > 1760);
+  bool useClassical = !useNNUE || (pos.count<ALL_PIECES>() > 7 && abs(psq) > 1760 && pos.rule50_count() < 20);
   if (useClassical)
       v = Evaluation<NO_TRACE>(pos).value();
   else
@@ -1077,7 +1085,7 @@ Value Eval::evaluate(const Position& pos, int* complexity) {
   }
 
   // Damp down the evaluation linearly when shuffling
-  v = v * (195 - pos.rule50_count()) / 211;
+  v = v * (P4 - pos.rule50_count()) / P5;
 
   // Guarantee evaluation does not hit the tablebase range
   v = std::clamp(v, VALUE_TB_LOSS_IN_MAX_PLY + 1, VALUE_TB_WIN_IN_MAX_PLY - 1);

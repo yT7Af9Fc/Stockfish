@@ -192,10 +192,7 @@ using namespace Trace;
 
 namespace {
 
-  int P1 = 7;
-  int P2 = 1760;
-  int P3 = 20;
-  int P4 = 195, P5 = 211;
+  int P1 = 7, P2 = 1760, P3 = 20, P4 = 195, P5 = 211:
   TUNE(SetRange(2, 32), P1);
   TUNE(SetRange(0, 99), P3);
   TUNE(P2, P4, P5);
@@ -1065,7 +1062,7 @@ Value Eval::evaluate(const Position& pos, int* complexity) {
   // We use the much less accurate but faster Classical eval when the NNUE 
   // option is set to false. Otherwise we use the NNUE eval unless the
   // PSQ advantage is decisive and several pieces remain (~3 Elo)
-  bool useClassical = !useNNUE || (pos.count<ALL_PIECES>() > 7 && abs(psq) > 1760 && pos.rule50_count() < 20);
+  bool useClassical = !useNNUE || (pos.count<ALL_PIECES>() > P1 && abs(psq) > P2 && pos.rule50_count() < P3);
   if (useClassical)
       v = Evaluation<NO_TRACE>(pos).value();
   else
